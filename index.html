@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FitTrack – Health & Fitness Tracker</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">💪</span>
+      <span class="logo-text">FitTrack</span>
+    </div>
+    <nav>
+      <a href="#" class="nav-item active" data-section="dashboard">🏠 Dashboard</a>
+      <a href="#" class="nav-item" data-section="workout">🏋️ Log Workout</a>
+      <a href="#" class="nav-item" data-section="nutrition">🥗 Nutrition</a>
+      <a href="#" class="nav-item" data-section="water">💧 Water Intake</a>
+      <a href="#" class="nav-item" data-section="goals">🎯 Goals</a>
+      <a href="#" class="nav-item" data-section="history">📋 History</a>
+    </nav>
+    <div class="sidebar-footer">
+      <p>Internship Project</p>
+      <p class="small">HTML • CSS • JS</p>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="topbar">
+      <div>
+        <h1 class="page-title" id="page-title">Dashboard</h1>
+        <p class="page-sub" id="page-sub">Your daily health overview</p>
+      </div>
+      <div class="topbar-right">
+        <span class="date-badge" id="today-date"></span>
+      </div>
+    </header>
+
+    <!-- ===== DASHBOARD ===== -->
+    <section id="dashboard" class="section active">
+
+      <div class="cards-grid">
+        <div class="card card-orange">
+          <div class="card-icon">🔥</div>
+          <div class="card-label">Calories Burned</div>
+          <div class="card-value" id="dash-calories">0</div>
+          <div class="card-sub">kcal today</div>
+        </div>
+        <div class="card card-blue">
+          <div class="card-icon">👣</div>
+          <div class="card-label">Steps</div>
+          <div class="card-value" id="dash-steps">0</div>
+          <div class="card-sub">/ 10,000 goal</div>
+        </div>
+        <div class="card card-cyan">
+          <div class="card-icon">💧</div>
+          <div class="card-label">Water Intake</div>
+          <div class="card-value" id="dash-water">0</div>
+          <div class="card-sub">/ 8 glasses</div>
+        </div>
+        <div class="card card-green">
+          <div class="card-icon">🏋️</div>
+          <div class="card-label">Workouts</div>
+          <div class="card-value" id="dash-workouts">0</div>
+          <div class="card-sub">this week</div>
+        </div>
+      </div>
+
+      <!-- BMI Calculator -->
+      <div class="two-col">
+        <div class="box">
+          <h3>⚖️ BMI Calculator</h3>
+          <div class="bmi-form">
+            <div class="input-group">
+              <label>Height (cm)</label>
+              <input type="number" id="bmi-height" placeholder="e.g. 170" />
+            </div>
+            <div class="input-group">
+              <label>Weight (kg)</label>
+              <input type="number" id="bmi-weight" placeholder="e.g. 65" />
+            </div>
+            <button class="btn-primary" onclick="calculateBMI()">Calculate BMI</button>
+          </div>
+          <div id="bmi-result" class="bmi-result" style="display:none;">
+            <div class="bmi-score" id="bmi-score">0</div>
+            <div class="bmi-category" id="bmi-category">-</div>
+            <div class="bmi-bar">
+              <div class="bmi-fill" id="bmi-fill"></div>
+            </div>
+            <p class="bmi-tip" id="bmi-tip"></p>
+          </div>
+        </div>
+
+        <div class="box">
+          <h3>📊 Weekly Activity</h3>
+          <canvas id="weeklyChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Today's Summary -->
+      <div class="box mt">
+        <h3>📅 Today's Activity Log</h3>
+        <table class="data-table">
+          <thead>
+            <tr><th>Time</th><th>Activity</th><th>Duration</th><th>Calories</th></tr>
+          </thead>
+          <tbody id="today-log">
+            <tr><td colspan="4" class="empty">No activities logged today.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== LOG WORKOUT ===== -->
+    <section id="workout" class="section">
+      <div class="form-box">
+        <h2>🏋️ Log a Workout</h2>
+        <p class="form-sub">Track your exercise and calories burned</p>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label>Exercise Type *</label>
+            <select id="w-type">
+              <option value="">Select exercise</option>
+              <option value="Running">🏃 Running</option>
+              <option value="Walking">🚶 Walking</option>
+              <option value="Cycling">🚴 Cycling</option>
+              <option value="Swimming">🏊 Swimming</option>
+              <option value="Gym">🏋️ Gym / Weight Training</option>
+              <option value="Yoga">🧘 Yoga</option>
+              <option value="HIIT">⚡ HIIT</option>
+              <option value="Football">⚽ Football</option>
+              <option value="Cricket">🏏 Cricket</option>
+              <option value="Other">🤸 Other</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Duration (minutes) *</label>
+            <input type="number" id="w-duration" placeholder="e.g. 30" min="1" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label>Calories Burned *</label>
+            <input type="number" id="w-calories" placeholder="e.g. 250" min="1" />
+          </div>
+          <div class="input-group">
+            <label>Steps (optional)</label>
+            <input type="number" id="w-steps" placeholder="e.g. 3000" min="0" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label>Date *</label>
+            <input type="date" id="w-date" />
+          </div>
+          <div class="input-group">
+            <label>Intensity</label>
+            <select id="w-intensity">
+              <option value="Low">🟢 Low</option>
+              <option value="Medium" selected>🟡 Medium</option>
+              <option value="High">🔴 High</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Notes (optional)</label>
+          <input type="text" id="w-notes" placeholder="Any extra details..." />
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-secondary" onclick="resetWorkoutForm()">🔄 Reset</button>
+          <button class="btn-primary" onclick="logWorkout()">✅ Save Workout</button>
+        </div>
+        <div id="workout-msg" class="form-msg"></div>
+      </div>
+    </section>
+
+    <!-- ===== NUTRITION ===== -->
+    <section id="nutrition" class="section">
+      <div class="form-box">
+        <h2>🥗 Log Nutrition / Meal</h2>
+        <p class="form-sub">Track what you eat to manage calorie intake</p>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label>Meal Type *</label>
+            <select id="n-meal">
+              <option value="Breakfast">🌅 Breakfast</option>
+              <option value="Lunch">☀️ Lunch</option>
+              <option value="Dinner">🌙 Dinner</option>
+              <option value="Snack">🍎 Snack</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Food Item *</label>
+            <input type="text" id="n-food" placeholder="e.g. Rice, Dal, Roti..." />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label>Calories (kcal) *</label>
+            <input type="number" id="n-calories" placeholder="e.g. 350" min="1" />
+          </div>
+          <div class="input-group">
+            <label>Protein (g)</label>
+            <input type="number" id="n-protein" placeholder="e.g. 15" min="0" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label>Carbs (g)</label>
+            <input type="number" id="n-carbs" placeholder="e.g. 60" min="0" />
+          </div>
+          <div class="input-group">
+            <label>Date *</label>
+            <input type="date" id="n-date" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-secondary" onclick="resetNutritionForm()">🔄 Reset</button>
+          <button class="btn-primary" onclick="logNutrition()">✅ Save Meal</button>
+        </div>
+        <div id="nutrition-msg" class="form-msg"></div>
+      </div>
+
+      <!-- Nutrition Summary -->
+      <div class="box mt">
+        <h3>📊 Today's Nutrition Summary</h3>
+        <div class="nutrition-cards">
+          <div class="n-card">
+            <div class="n-val" id="n-total-cal">0</div>
+            <div class="n-label">Calories (kcal)</div>
+          </div>
+          <div class="n-card">
+            <div class="n-val" id="n-total-protein">0g</div>
+            <div class="n-label">Protein</div>
+          </div>
+          <div class="n-card">
+            <div class="n-val" id="n-total-carbs">0g</div>
+            <div class="n-label">Carbs</div>
+          </div>
+        </div>
+        <table class="data-table mt">
+          <thead>
+            <tr><th>Meal</th><th>Food</th><th>Calories</th><th>Protein</th><th>Carbs</th><th>Action</th></tr>
+          </thead>
+          <tbody id="nutrition-log">
+            <tr><td colspan="6" class="empty">No meals logged today.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== WATER INTAKE ===== -->
+    <section id="water" class="section">
+      <div class="water-container">
+        <h2>💧 Water Intake Tracker</h2>
+        <p class="form-sub">Stay hydrated! Goal: 8 glasses per day</p>
+
+        <div class="water-visual">
+          <div class="water-bottle">
+            <div class="water-fill" id="water-fill"></div>
+            <div class="water-text" id="water-text">0/8</div>
+          </div>
+          <div class="water-controls">
+            <p class="water-count" id="water-count">0 glasses today</p>
+            <button class="btn-water" onclick="addWater()">+ Add Glass 💧</button>
+            <button class="btn-water-remove" onclick="removeWater()">- Remove Glass</button>
+            <div class="water-progress">
+              <div class="progress-bar">
+                <div class="progress-fill-blue" id="water-progress-fill" style="width:0%"></div>
+              </div>
+              <p id="water-progress-text">0% of daily goal</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== GOALS ===== -->
+    <section id="goals" class="section">
+      <div class="form-box">
+        <h2>🎯 Set Fitness Goals</h2>
+        <p class="form-sub">Define your daily and weekly targets</p>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label>Daily Steps Goal</label>
+            <input type="number" id="g-steps" placeholder="e.g. 10000" />
+          </div>
+          <div class="input-group">
+            <label>Daily Calories Burn Goal</label>
+            <input type="number" id="g-calories" placeholder="e.g. 500" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="input-group">
+            <label>Weekly Workouts Goal</label>
+            <input type="number" id="g-workouts" placeholder="e.g. 5" />
+          </div>
+          <div class="input-group">
+            <label>Target Weight (kg)</label>
+            <input type="number" id="g-weight" placeholder="e.g. 70" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" onclick="saveGoals()">✅ Save Goals</button>
+        </div>
+        <div id="goals-msg" class="form-msg"></div>
+      </div>
+
+      <!-- Goals Progress -->
+      <div class="box mt" id="goals-progress"></div>
+    </section>
+
+    <!-- ===== HISTORY ===== -->
+    <section id="history" class="section">
+      <div class="box">
+        <div class="table-header">
+          <h3>📋 Workout History</h3>
+          <button class="btn-danger" onclick="clearWorkouts()">🗑️ Clear All</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr><th>Date</th><th>Exercise</th><th>Duration</th><th>Calories</th><th>Intensity</th><th>Action</th></tr>
+          </thead>
+          <tbody id="workout-history">
+            <tr><td colspan="6" class="empty">No workouts logged yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>
